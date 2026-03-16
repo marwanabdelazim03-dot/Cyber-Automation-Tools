@@ -1,109 +1,131 @@
-# 🔍 Subdomain Monitor
+# 🔍 Information Disclosure Finder
 
-An automated subdomain monitoring tool that scans a target domain for newly discovered subdomains and sends real-time Telegram notifications. Useful for bug bounty hunters and security researchers who want to be the first to spot new attack surfaces.
-
----
-
-## ✨ Features
-
-- 🔄 Continuously monitors a domain for new subdomains (every hour)
-- 📩 Instant Telegram alerts when new subdomains are discovered
-- 💾 Persists known subdomains to a local file to track changes over time
-- ⚡ Uses [subfinder](https://github.com/projectdiscovery/subfinder) for fast, passive enumeration
+A lightweight Python tool for detecting exposed sensitive files on web servers during security assessments and penetration testing engagements.
 
 ---
 
-## 📋 Requirements
+## ⚠️ Legal Disclaimer
+
+> **This tool is intended for authorized security testing only.**
+> Use it exclusively on systems you own or have explicit written permission to test.
+> Unauthorized use against third-party systems is illegal and unethical.
+
+---
+
+## 📌 Overview
+
+Information Disclosure Finder automates the detection of commonly misconfigured or accidentally exposed files that can leak sensitive data — such as environment variables, database backups, configuration files, and source control artifacts.
+
+---
+
+## 🚀 Features
+
+- ✅ Multi-threaded scanning for fast performance
+- ✅ Supports multiple targets from a text file
+- ✅ Detects common sensitive paths (`.env`, `.git/config`, `phpinfo.php`, etc.)
+- ✅ Handles HTTP & HTTPS targets (with SSL warning suppression for self-signed certs)
+- ✅ Prevents false positives by disabling redirect following
+- ✅ Saves confirmed findings to an output file
+
+---
+
+## 🛠️ Requirements
 
 - Python 3.x
-- [subfinder](https://github.com/projectdiscovery/subfinder/releases) (must be in PATH)
-- A Telegram Bot Token and Chat ID
+- `requests` library
 
-### Install Python dependencies
-
+Install dependencies:
 ```bash
 pip install requests
 ```
 
-### Install subfinder
+---
 
-Download the latest release for your OS from:
-👉 https://github.com/projectdiscovery/subfinder/releases
-
-Then add the binary to your system PATH.
+## 📂 Project Structure
+```
+.
+├── info_disclosure_finder.py   # Main scanner script
+├── targets.txt                 # List of target URLs (one per line)
+└── sensitive_findings.txt      # Output file (auto-generated on findings)
+```
 
 ---
 
 ## ⚙️ Configuration
 
-Open `subdomain_monitor.py` and edit the following variables:
+Edit the constants at the top of the script to customize behavior:
 
-```python
-DOMAIN = "example.com"           # Target domain to monitor
-TELEGRAM_TOKEN = "YOUR_BOT_TOKEN"  # Your Telegram bot token
-CHAT_ID = "YOUR_CHAT_ID"           # Your Telegram chat ID
-```
-
-### How to get your Telegram Bot Token
-
-1. Open Telegram and search for `@BotFather`
-2. Send `/newbot` and follow the instructions
-3. Copy the token provided
-
-### How to get your Chat ID
-
-1. Send any message to your bot
-2. Open in your browser:
-   ```
-   https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates
-   ```
-3. Find `"chat": {"id": XXXXXXXXX}` — that's your Chat ID
+| Variable         | Default                    | Description                          |
+|------------------|----------------------------|--------------------------------------|
+| `TARGETS_FILE`   | `targets.txt`              | File containing target URLs          |
+| `THREADS`        | `5`                        | Number of concurrent scanning threads|
+| `OUTPUT_FILE`    | `sensitive_findings.txt`   | File to save confirmed findings      |
+| `SENSITIVE_PATHS`| (list of 8 paths)          | Paths to probe on each target        |
 
 ---
 
-## 🚀 Usage
+## 📋 Sensitive Paths Checked
 
+| Path               | Risk                              |
+|--------------------|-----------------------------------|
+| `/.env`            | API keys, DB credentials          |
+| `/.git/config`     | Source control metadata           |
+| `/.htaccess`       | Apache server config              |
+| `/phpinfo.php`     | Full PHP/server environment info  |
+| `/config.php.bak`  | Backup with hardcoded credentials |
+| `/composer.json`   | Dependency enumeration            |
+| `/backup.sql`      | Full database dump                |
+| `/database.sqlite` | Raw SQLite database file          |
+
+---
+
+## 📖 Usage
+
+1. Add your authorized target URLs to `targets.txt` (one URL per line):
+```
+http://example.com
+https://testsite.local
+192.168.1.100
+```
+
+2. Run the scanner:
 ```bash
-python subdomain_monitor.py
+python info_disclosure_finder.py
 ```
 
-The script will:
-1. Scan the target domain using `subfinder`
-2. Compare results against previously known subdomains
-3. Send a Telegram notification for any new findings
-4. Sleep for 1 hour, then repeat
+3. Monitor live output in the terminal. Confirmed findings are also saved to `sensitive_findings.txt`.
 
 ---
 
-## 📁 Output
-
-A file named `<domain>_subdomains.txt` will be created in the same directory, storing all discovered subdomains.
-
-Example: `google.com_subdomains.txt`
-
----
-
-## 📸 Example Notification
-
+## 📤 Sample Output
 ```
-🔔 New subdomains found for google.com:
-mail.google.com
-vpn.google.com
-staging.google.com
+--- Information Disclosure Finder Started ---
+[*] Scanning 2 targets with 5 threads...
+--------------------------------------------------
+[*] Testing: http://example.com/.env -> Status: 404
+[*] Testing: http://example.com/.git/config -> Status: 200
+
+[+] ALERT: Sensitive file found at http://example.com/.git/config
+
+--------------------------------------------------
+[*] Completed! Results saved in sensitive_findings.txt
 ```
 
 ---
 
-## ⚠️ Disclaimer
+## 🔒 Responsible Use
 
-This tool is intended for **authorized security research and bug bounty programs only**.  
-Always ensure you have permission before scanning any domain.  
-The author is not responsible for any misuse.
+This tool is designed for:
+
+- Bug bounty hunting (within defined scope)
+- CTF challenges
+- Internal security audits
+- Penetration testing with written authorization
+
+**Never use this tool against systems without permission.**
 
 ---
 
-## 🛠️ Built With
+## 📄 License
 
-- [Python](https://www.python.org/)
-- [subfinder](https://github.com/projectdiscovery/subfinder) by ProjectDiscovery
-- [Telegram Bot API](https://core.telegram.org/bots/api)
+MIT License — Free to use and modify for ethical security research.

@@ -219,7 +219,7 @@ Contributions are welcome! Follow these steps:
 ## 📞 Contact & Support
 
 - **GitHub**: [@marwanabdelazim03-dot](https://github.com/marwanabdelazim03-dot)
-- **Email**: [marwanabdelazim03@gmail.com]
+- **Email**: marwanabdelazim03@gmail.com
 - **Issues**: [Report bugs here](https://github.com/marwanabdelazim03-dot/Cyber-Automation-Tools/issues)
 
 ---

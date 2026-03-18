@@ -4,9 +4,9 @@ import subprocess
 import os
 
 # --- Configuration ---
-DOMAIN = "193.227.46.44"  # The domain you want to monitor
-TELEGRAM_TOKEN = "8686298540:AAHWwySWSSny_utwiXgKYUNWvOC72p-jA-8"  # Your Telegram bot token
-CHAT_ID = "1092619032"  # Your Telegram chat ID
+DOMAIN = ""  # The domain you want to monitor
+TELEGRAM_TOKEN = ""  # Your Telegram bot token
+CHAT_ID = ""  # Your Telegram chat ID
 FILE_NAME = f"{DOMAIN}_subdomains.txt"
 
 def send_telegram_msg(message):
